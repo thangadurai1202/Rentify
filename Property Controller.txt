@@ -1,0 +1,61 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/properties")
+public class PropertyController {
+
+    private final PropertyService propertyService;
+    private final EmailService emailService;
+    private final JwtTokenProvider jwtTokenProvider; // Add JwtTokenProvider
+
+    @Autowired
+    public PropertyController(PropertyService propertyService, EmailService emailService, JwtTokenProvider jwtTokenProvider) {
+        this.propertyService = propertyService;
+        this.emailService = emailService;
+        this.jwtTokenProvider = jwtTokenProvider; // Inject JwtTokenProvider
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addProperty(@RequestBody Property property, @RequestHeader(name = "Authorization") String token) {
+        String username = jwtTokenProvider.getUsernameFromToken(token); // Extract username from token
+        // Use username for any necessary operations
+        
+        propertyService.addProperty(property);
+        return ResponseEntity.ok("Property added successfully");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Property>> getAllProperties() {
+        List<Property> properties = propertyService.getAllProperties();
+        return ResponseEntity.ok(properties);
+    }
+
+    @PostMapping("/{propertyId}/like")
+    public ResponseEntity<String> likeProperty(@PathVariable Long propertyId, @RequestHeader(name = "Authorization") String token) {
+        String username = jwtTokenProvider.getUsernameFromToken(token); // Extract username from token
+        // Use username for any necessary operations
+        
+        propertyService.likeProperty(propertyId);
+        return ResponseEntity.ok("Property liked successfully");
+    }
+
+    @PostMapping("/{propertyId}/interest")
+    public ResponseEntity<String> expressInterest(@PathVariable Long propertyId, @RequestBody BuyerDetails buyerDetails, @RequestHeader(name = "Authorization") String token) {
+        String username = jwtTokenProvider.getUsernameFromToken(token); // Extract username from token
+        // Use username for any necessary operations
+        
+        String sellerEmail = propertyService.getSellerEmail(propertyId);
+        String emailBody = "Buyer Details: " + buyerDetails.toString();
+
+        try {
+            emailService.sendEmail(sellerEmail, "Interest in Property", emailBody);
+            return ResponseEntity.ok("Interest expressed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email");
+        }
+    }
+}
