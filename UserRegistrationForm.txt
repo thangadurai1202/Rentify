@@ -1,0 +1,47 @@
+// UserRegistrationForm.js
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const UserRegistrationForm = () => {
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    address: '',
+    city: '',
+    state: '',
+    country: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/users/register', userData);
+      alert('User registered successfully');
+    } catch (error) {
+      alert('Failed to register user');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="firstName" value={userData.firstName} onChange={handleChange} placeholder="First Name" required />
+      <input type="text" name="lastName" value={userData.lastName} onChange={handleChange} placeholder="Last Name" required />
+      <input type="email" name="email" value={userData.email} onChange={handleChange} placeholder="Email" required />
+      <input type="tel" name="phoneNumber" value={userData.phoneNumber} onChange={handleChange} placeholder="Phone Number" required />
+      <input type="text" name="address" value={userData.address} onChange={handleChange} placeholder="Address" />
+      <input type="text" name="city" value={userData.city} onChange={handleChange} placeholder="City" />
+      <input type="text" name="state" value={userData.state} onChange={handleChange} placeholder="State" />
+      <input type="text" name="country" value={userData.country} onChange={handleChange} placeholder="Country" />
+      <button type="submit">Register</button>
+    </form>
+  );
+};
+
+export default UserRegistrationForm;
