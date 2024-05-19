@@ -1,0 +1,91 @@
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
+@Entity
+public class Property {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    private String place;
+
+    @NotBlank
+    private String area;
+
+    private int bedrooms;
+
+    private int bathrooms;
+
+    private String nearbyHospitals;
+
+    private String nearbyColleges;
+    
+    private int likeCount;
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public int getBedrooms() {
+        return bedrooms;
+    }
+
+    public void setBedrooms(int bedrooms) {
+        this.bedrooms = bedrooms;
+    }
+
+    public int getBathrooms() {
+        return bathrooms;
+    }
+
+    public void setBathrooms(int bathrooms) {
+        this.bathrooms = bathrooms;
+    }
+
+    public String getNearbyHospitals() {
+        return nearbyHospitals;
+    }
+
+    public void setNearbyHospitals(String nearbyHospitals) {
+        this.nearbyHospitals = nearbyHospitals;
+    }
+
+    public String getNearbyColleges() {
+        return nearbyColleges;
+    }
+
+    public void setNearbyColleges(String nearbyColleges) {
+        this.nearbyColleges = nearbyColleges;
+    }
+    
+        public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+}
