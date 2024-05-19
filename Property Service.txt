@@ -1,0 +1,61 @@
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+
+@Service
+public class PropertyService {
+    @Autowired
+    private PropertyRepository propertyRepository;
+
+    @Autowired
+    private EmailService emailService; // Inject EmailService
+
+    public void addProperty(Property property) {
+        // Perform validation
+        if (property.getPlace() == null || property.getPlace().isEmpty()) {
+            throw new IllegalArgumentException("Place cannot be blank");
+        }
+
+        if (property.getArea() == null || property.getArea().isEmpty()) {
+            throw new IllegalArgumentException("Area cannot be blank");
+        }
+
+
+        // Save property if all validations pass
+        propertyRepository.save(property);
+    }
+
+    public List<Property> getAllProperties() {
+        return propertyRepository.findAll();
+    }
+
+    public void likeProperty(Long propertyId) {
+        // Retrieve the property by ID
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new IllegalArgumentException("Property not found"));
+
+        // Increment the like count
+        property.setLikeCount(property.getLikeCount() + 1);
+
+        // Save the updated property
+        propertyRepository.save(property);
+
+        // Get the owner's email address
+        String ownerEmail = property.getOwnerEmail();
+
+        // Compose email body
+        String emailBody = "Your property (ID: " + propertyId + ") has received a new like.";
+
+        try {
+            // Send email notification to the property owner
+            emailService.sendEmail(ownerEmail, "New Like on Your Property", emailBody);
+        } catch (Exception e) {
+            // Handle email sending failure
+            // You can log the error or handle it in any appropriate way
+            e.printStackTrace();
+        }
+    }
+}
