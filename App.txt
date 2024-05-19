@@ -1,0 +1,19 @@
+
+// App.js
+import React, { Component } from 'react';
+import UserRegistrationForm from './UserRegistrationForm';
+import PropertyManagement from './PropertyManagement';
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Real Estate Management</h1>
+        <UserRegistrationForm />
+        <PropertyManagement />
+      </div>
+    );
+  }
+}
+
+export default App;
