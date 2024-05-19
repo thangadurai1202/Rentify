@@ -1,0 +1,36 @@
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private Validator validator;
+
+    public void registerUser(User user) {
+        // Validate the user object
+        if (user == null) {
+            throw new IllegalArgumentException("User object is null");
+        }
+
+        // Validate the user's properties using Bean Validation
+        if (!validateUser(user)) {
+            throw new IllegalArgumentException("User object is not valid");
+        }
+
+
+        // Save the user
+        userRepository.save(user);
+    }
+
+    private boolean validateUser(User user) {
+        // Use the Validator to validate the user object
+        return validator.validate(user).isEmpty();
+    }
+}
+
